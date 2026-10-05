@@ -50,7 +50,7 @@ function AuthPage() {
 
   async function google() {
     const r = await lovable.auth.signInWithOAuth("google", { redirect_uri: window.location.origin + "/auth" });
-    if (r.error) return toast.error("Google belépés sikertelen");
+    if (r.error) { toast.error("Google belépés sikertelen"); return; }
     if (r.redirected) return;
     navigate({ to: "/map" });
   }

@@ -8,7 +8,7 @@ import { HABITS } from "@/lib/path-template";
 import { Lock, Check } from "lucide-react";
 
 export const Route = createFileRoute("/_authenticated/map")({
-  validateSearch: (s: Record<string, unknown>) => ({ h: typeof s.h === "string" ? s.h : undefined }),
+  validateSearch: (s: Record<string, unknown>): { h?: string } => (typeof s["h"] === "string" ? { h: s["h"] } : {}),
   head: () => ({ meta: [{ title: "Térkép – Szokásváltó" }] }),
   component: MapPage,
 });
@@ -68,7 +68,7 @@ function MapPage() {
     setBusy(true);
     const { data, error } = await supabase.rpc("complete_field", { _habit: habit!.id });
     setBusy(false);
-    if (error) return toast.error("Nem sikerült menteni");
+    if (error) { toast.error("Nem sikerült menteni"); return; }
     const r = data as { checkpoint: boolean; position: number };
     if (r.checkpoint) setCelebrate(r.position);
     else toast.success("Szép munka! Jöhet a következő mező.");
@@ -80,7 +80,7 @@ function MapPage() {
     const { error } = await supabase.rpc("fail_field", { _habit: habit!.id, _action: action });
     setBusy(false);
     setGiveUpOpen(false);
-    if (error) return toast.error("Nem sikerült menteni");
+    if (error) { toast.error("Nem sikerült menteni"); return; }
     toast(
       action === "retry" ? "Rendben, a mező a tiéd marad. Próbáld újra!"
       : action === "easier" ? "Könnyebb változatot kaptál."

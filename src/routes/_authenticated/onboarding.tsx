@@ -38,11 +38,11 @@ function Onboarding() {
       .insert({ habit_key: habit, name, goal: goal || null, intensity })
       .select()
       .single();
-    if (error || !h) { setBusy(false); return toast.error("Nem sikerült létrehozni"); }
+    if (error || !h) { setBusy(false); { toast.error("Nem sikerült létrehozni"); return; } }
     const rows = buildTemplate(habit, intensity).map((f) => ({ ...f, habit_id: h.id }));
     const { error: e2 } = await supabase.from("fields").insert(rows);
     setBusy(false);
-    if (e2) return toast.error("Nem sikerült a pályát létrehozni");
+    if (e2) { toast.error("Nem sikerült a pályát létrehozni"); return; }
     await qc.invalidateQueries({ queryKey: ["habits"] });
     navigate({ to: "/map", search: { h: h.id } });
   }

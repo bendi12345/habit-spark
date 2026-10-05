@@ -66,7 +66,7 @@ export function buildTemplate(habit: HabitKey, intensity: number, count = 40) {
     const position = i + 1;
     const block = Math.floor(i / 5);
     const step = i % 5;
-    const [title, description] = T[habit][step][block % 2];
+    const [title, description] = T[habit][step]![block % 2]!;
     const isCheckpoint = position % 5 === 0;
     return {
       position,
