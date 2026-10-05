@@ -14,13 +14,165 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      challenge_attempts: {
+        Row: {
+          action: string | null
+          created_at: string
+          field_id: string
+          habit_id: string
+          id: string
+          outcome: string
+          user_id: string
+        }
+        Insert: {
+          action?: string | null
+          created_at?: string
+          field_id: string
+          habit_id: string
+          id?: string
+          outcome: string
+          user_id?: string
+        }
+        Update: {
+          action?: string | null
+          created_at?: string
+          field_id?: string
+          habit_id?: string
+          id?: string
+          outcome?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "challenge_attempts_field_id_fkey"
+            columns: ["field_id"]
+            isOneToOne: false
+            referencedRelation: "fields"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "challenge_attempts_habit_id_fkey"
+            columns: ["habit_id"]
+            isOneToOne: false
+            referencedRelation: "habits"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      fields: {
+        Row: {
+          created_at: string
+          description: string
+          difficulty: number
+          habit_id: string
+          id: string
+          is_checkpoint: boolean
+          position: number
+          status: string
+          title: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          description?: string
+          difficulty: number
+          habit_id: string
+          id?: string
+          is_checkpoint?: boolean
+          position: number
+          status?: string
+          title: string
+          user_id?: string
+        }
+        Update: {
+          created_at?: string
+          description?: string
+          difficulty?: number
+          habit_id?: string
+          id?: string
+          is_checkpoint?: boolean
+          position?: number
+          status?: string
+          title?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "fields_habit_id_fkey"
+            columns: ["habit_id"]
+            isOneToOne: false
+            referencedRelation: "habits"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      habits: {
+        Row: {
+          consecutive_failures: number
+          created_at: string
+          current_position: number
+          goal: string | null
+          habit_key: string
+          id: string
+          intensity: number
+          last_checkpoint: number
+          name: string
+          paused_until: string | null
+          user_id: string
+        }
+        Insert: {
+          consecutive_failures?: number
+          created_at?: string
+          current_position?: number
+          goal?: string | null
+          habit_key: string
+          id?: string
+          intensity?: number
+          last_checkpoint?: number
+          name: string
+          paused_until?: string | null
+          user_id?: string
+        }
+        Update: {
+          consecutive_failures?: number
+          created_at?: string
+          current_position?: number
+          goal?: string | null
+          habit_key?: string
+          id?: string
+          intensity?: number
+          last_checkpoint?: number
+          name?: string
+          paused_until?: string | null
+          user_id?: string
+        }
+        Relationships: []
+      }
+      profiles: {
+        Row: {
+          created_at: string
+          display_name: string | null
+          id: string
+        }
+        Insert: {
+          created_at?: string
+          display_name?: string | null
+          id: string
+        }
+        Update: {
+          created_at?: string
+          display_name?: string | null
+          id?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      complete_field: { Args: { _habit: string }; Returns: Json }
+      fail_field: { Args: { _action: string; _habit: string }; Returns: Json }
     }
     Enums: {
       [_ in never]: never
