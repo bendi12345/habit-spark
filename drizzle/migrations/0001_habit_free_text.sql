@@ -1,0 +1,2 @@
+ALTER TABLE public.habits ADD COLUMN IF NOT EXISTS free_text text, ADD COLUMN IF NOT EXISTS ai_interpretation text, ADD COLUMN IF NOT EXISTS emoji text NOT NULL DEFAULT '✨';
+ALTER TABLE public.habits ALTER COLUMN habit_key SET DEFAULT 'custom';
