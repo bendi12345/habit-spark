@@ -3,3 +3,6 @@
 - [ ] Step 2: AI path generator, personal difficulty, layered proofs, AI coach (one ongoing chat, saved), assessments, weekly summary, safety
 - [ ] Step 3: streaks, milestones, battle pass
 - [ ] Step 4: social module (friends, groups, duels)
+- [ ] Core: AI free-text path generator, English UI, black/gray/yellow theme (in progress)
+- [ ] Next brief: feedback effects / in-app features (see uploaded "Extend the app with feedback effects…")
+- [ ] Later from Hungarian brief: long questionnaire, full settings, profile, friends placeholders

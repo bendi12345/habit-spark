@@ -3,10 +3,10 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
-      { title: "Szokásváltó – lépésről lépésre a rossz szokások ellen" },
-      { name: "description", content: "Játékos térkép, mezőnként egy kihívás. Ellenőrzőpontok, ahonnan nincs visszaesés." },
-      { property: "og:title", content: "Szokásváltó" },
-      { property: "og:description", content: "Játékos térkép a rossz szokások elhagyásához." },
+      { title: "Habit Shift – beat bad habits one field at a time" },
+      { name: "description", content: "A playful map with one AI-made challenge per field. Checkpoints you never fall below." },
+      { property: "og:title", content: "Habit Shift" },
+      { property: "og:description", content: "A playful map for leaving bad habits behind." },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
     ],
@@ -18,12 +18,12 @@ function Landing() {
   const preview = [1, 2, 3, 4, 5, 6, 7];
   return (
     <main className="mx-auto flex min-h-dvh max-w-md flex-col px-6 py-10">
-      <p className="font-display text-lg text-primary">Szokásváltó</p>
+      <p className="font-display text-lg text-primary">Habit Shift</p>
       <h1 className="mt-6 text-5xl font-bold leading-[1.05]">
-        Egy mező.<br />Egy kihívás.<br /><span className="text-primary">Egy új te.</span>
+        One field.<br />One challenge.<br /><span className="text-primary">A new you.</span>
       </h1>
       <p className="mt-5 text-muted-foreground">
-        Haladj végig a pályán, mint egy játékban. Minden 5. mező ellenőrzőpont – ami onnan visszafelé van, azt már senki nem veheti el.
+        Move along the path like a game. Every 5th field is a checkpoint — progress behind it can never be taken away.
       </p>
 
       <div className="my-10 flex items-end justify-between">
@@ -49,9 +49,9 @@ function Landing() {
 
       <div className="mt-auto space-y-3">
         <Link to="/map" className="block rounded-2xl bg-primary py-4 text-center font-display text-lg font-semibold text-primary-foreground">
-          Indulás
+          Get started
         </Link>
-        <p className="text-center text-xs text-muted-foreground">Motivációs eszköz, nem orvosi tanács.</p>
+        <p className="text-center text-xs text-muted-foreground">A motivation tool, not medical advice.</p>
       </div>
     </main>
   );

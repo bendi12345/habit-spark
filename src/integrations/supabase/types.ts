@@ -108,9 +108,12 @@ export type Database = {
       }
       habits: {
         Row: {
+          ai_interpretation: string | null
           consecutive_failures: number
           created_at: string
           current_position: number
+          emoji: string
+          free_text: string | null
           goal: string | null
           habit_key: string
           id: string
@@ -121,11 +124,14 @@ export type Database = {
           user_id: string
         }
         Insert: {
+          ai_interpretation?: string | null
           consecutive_failures?: number
           created_at?: string
           current_position?: number
+          emoji?: string
+          free_text?: string | null
           goal?: string | null
-          habit_key: string
+          habit_key?: string
           id?: string
           intensity?: number
           last_checkpoint?: number
@@ -134,9 +140,12 @@ export type Database = {
           user_id?: string
         }
         Update: {
+          ai_interpretation?: string | null
           consecutive_failures?: number
           created_at?: string
           current_position?: number
+          emoji?: string
+          free_text?: string | null
           goal?: string | null
           habit_key?: string
           id?: string

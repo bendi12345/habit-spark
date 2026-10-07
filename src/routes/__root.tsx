@@ -20,10 +20,10 @@ function NotFoundComponent() {
     <div className="flex min-h-screen items-center justify-center px-4">
       <div className="max-w-md text-center">
         <h1 className="text-7xl font-bold">404</h1>
-        <h2 className="mt-4 text-xl font-semibold">Ez a mező nem létezik</h2>
+        <h2 className="mt-4 text-xl font-semibold">This field doesn’t exist</h2>
         <div className="mt-6">
           <Link to="/" className="inline-flex rounded-xl bg-primary px-4 py-2 font-semibold text-primary-foreground">
-            Vissza a főoldalra
+            Back to home
           </Link>
         </div>
       </div>
@@ -40,16 +40,16 @@ function ErrorComponent({ error, reset }: ErrorComponentProps) {
   return (
     <div className="flex min-h-screen items-center justify-center px-4">
       <div className="max-w-md text-center">
-        <h1 className="text-xl font-semibold">Valami elakadt</h1>
-        <p className="mt-2 text-sm text-muted-foreground">Próbáld újra, vagy menj vissza a főoldalra.</p>
+        <h1 className="text-xl font-semibold">Something got stuck</h1>
+        <p className="mt-2 text-sm text-muted-foreground">Try again, or head back home.</p>
         <div className="mt-6 flex justify-center gap-2">
           <button
             onClick={() => { router.invalidate(); reset(); }}
             className="rounded-xl bg-primary px-4 py-2 font-semibold text-primary-foreground"
           >
-            Újra
+            Retry
           </button>
-          <a href="/" className="rounded-xl border px-4 py-2">Főoldal</a>
+          <a href="/" className="rounded-xl border px-4 py-2">Home</a>
         </div>
       </div>
     </div>
@@ -61,16 +61,16 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
     meta: [
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1, viewport-fit=cover" },
-      { name: "theme-color", content: "#141b2b" },
-      { title: "Szokásváltó" },
-      { name: "description", content: "Lépj mezőről mezőre, és hagyd el a rossz szokásaidat." },
+      { name: "theme-color", content: "#151515" },
+      { title: "Habit Shift" },
+      { name: "description", content: "Move field by field and leave bad habits behind." },
     ],
     links: [
       { rel: "stylesheet", href: appCss },
       { rel: "icon", href: "/favicon.ico", type: "image/x-icon" },
       { rel: "preconnect", href: "https://fonts.googleapis.com" },
       { rel: "preconnect", href: "https://fonts.gstatic.com", crossOrigin: "anonymous" },
-      { rel: "stylesheet", href: "https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700&family=Nunito:wght@400;600;700&display=swap" },
+      { rel: "stylesheet", href: "https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=DM+Sans:wght@400;500;700&display=swap" },
     ],
   }),
   shellComponent: RootShell,
@@ -81,7 +81,7 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
 
 function RootShell({ children }: { children: ReactNode }) {
   return (
-    <html lang="hu">
+    <html lang="en">
       <head>
         <HeadContent />
       </head>
