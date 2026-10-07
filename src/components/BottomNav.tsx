@@ -7,9 +7,9 @@ export function BottomNav() {
   return (
     <nav className="fixed inset-x-0 bottom-0 z-30 border-t bg-card/90 pb-[env(safe-area-inset-bottom)] backdrop-blur">
       <div className="mx-auto flex max-w-md">
-        <Link to="/map" className={item} activeProps={active}><Map className="size-5" />Térkép</Link>
-        <Link to="/onboarding" className={item} activeProps={active}><Plus className="size-5" />Új szokás</Link>
-        <Link to="/settings" className={item} activeProps={active}><Settings className="size-5" />Beállítások</Link>
+        <Link to="/map" className={item} activeProps={active}><Map className="size-5" />Path</Link>
+        <Link to="/onboarding" className={item} activeProps={active}><Plus className="size-5" />New habit</Link>
+        <Link to="/settings" className={item} activeProps={active}><Settings className="size-5" />Settings</Link>
       </div>
     </nav>
   );

@@ -5,8 +5,8 @@
 @custom-variant dark (&:is(.dark *));
 
 @theme inline {
-  --font-display: "Fredoka", ui-rounded, system-ui, sans-serif;
-  --font-sans: "Nunito", ui-sans-serif, system-ui, sans-serif;
+  --font-display: "Space Grotesk", ui-sans-serif, system-ui, sans-serif;
+  --font-sans: "DM Sans", ui-sans-serif, system-ui, sans-serif;
   --radius-sm: calc(var(--radius) - 4px);
   --radius-md: calc(var(--radius) - 2px);
   --radius-lg: var(--radius);
@@ -38,32 +38,32 @@
 
 :root {
   --radius: 1rem;
-  --background: oklch(0.17 0.03 255);
-  --foreground: oklch(0.96 0.01 240);
-  --card: oklch(0.22 0.035 255);
-  --card-foreground: oklch(0.96 0.01 240);
-  --popover: oklch(0.22 0.035 255);
-  --popover-foreground: oklch(0.96 0.01 240);
-  --primary: oklch(0.87 0.2 135);
-  --primary-foreground: oklch(0.2 0.05 150);
-  --secondary: oklch(0.28 0.04 255);
-  --secondary-foreground: oklch(0.96 0.01 240);
-  --muted: oklch(0.26 0.03 255);
-  --muted-foreground: oklch(0.7 0.03 250);
-  --accent: oklch(0.72 0.15 200);
-  --accent-foreground: oklch(0.17 0.03 255);
+  --background: oklch(0.13 0 0);
+  --foreground: oklch(0.96 0 0);
+  --card: oklch(0.2 0 0);
+  --card-foreground: oklch(0.96 0 0);
+  --popover: oklch(0.2 0 0);
+  --popover-foreground: oklch(0.96 0 0);
+  --primary: oklch(0.88 0.18 95);
+  --primary-foreground: oklch(0.15 0 0);
+  --secondary: oklch(0.27 0 0);
+  --secondary-foreground: oklch(0.96 0 0);
+  --muted: oklch(0.25 0 0);
+  --muted-foreground: oklch(0.68 0 0);
+  --accent: oklch(0.75 0 0);
+  --accent-foreground: oklch(0.13 0 0);
   --destructive: oklch(0.68 0.19 25);
   --destructive-foreground: oklch(0.98 0 0);
-  --checkpoint: oklch(0.83 0.16 75);
+  --checkpoint: oklch(0.8 0.17 70);
   --checkpoint-foreground: oklch(0.22 0.05 60);
-  --locked: oklch(0.3 0.03 255);
+  --locked: oklch(0.3 0 0);
   --border: oklch(1 0 0 / 10%);
   --input: oklch(1 0 0 / 14%);
-  --ring: oklch(0.87 0.2 135);
-  --glow-primary: 0 0 0 6px oklch(0.87 0.2 135 / 18%), 0 8px 30px oklch(0.87 0.2 135 / 45%);
+  --ring: oklch(0.88 0.18 95);
+  --glow-primary: 0 0 0 6px oklch(0.88 0.18 95 / 18%), 0 8px 30px oklch(0.88 0.18 95 / 45%);
   --glow-checkpoint: 0 6px 24px oklch(0.83 0.16 75 / 40%);
-  --gradient-sky: radial-gradient(120% 60% at 50% 0%, oklch(0.3 0.08 200 / 55%), transparent 70%),
-    radial-gradient(80% 50% at 100% 100%, oklch(0.35 0.12 135 / 25%), transparent 70%);
+  --gradient-sky: radial-gradient(120% 60% at 50% 0%, oklch(0.3 0 0 / 50%), transparent 70%),
+    radial-gradient(80% 50% at 100% 100%, oklch(0.5 0.12 95 / 18%), transparent 70%);
 }
 
 @layer base {

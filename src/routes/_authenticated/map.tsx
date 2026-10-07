@@ -4,12 +4,11 @@ import { useEffect, useRef, useState } from "react";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
 import { BottomNav } from "@/components/BottomNav";
-import { HABITS } from "@/lib/path-template";
 import { Lock, Check } from "lucide-react";
 
 export const Route = createFileRoute("/_authenticated/map")({
   validateSearch: (s: Record<string, unknown>): { h?: string } => (typeof s["h"] === "string" ? { h: s["h"] } : {}),
-  head: () => ({ meta: [{ title: "Térkép – Szokásváltó" }] }),
+  head: () => ({ meta: [{ title: "Path – Habit Shift" }] }),
   component: MapPage,
 });
 
@@ -53,12 +52,12 @@ function MapPage() {
     currentRef.current?.scrollIntoView({ block: "center", behavior: "smooth" });
   }, [fields.data?.length, habit?.current_position]);
 
-  if (!habit) return <main className="p-8 text-muted-foreground">Betöltés…</main>;
+  if (!habit) return <main className="p-8 text-muted-foreground">Loading…</main>;
 
   const current = fields.data?.find((f) => f.position === habit.current_position);
   const pausedUntil = habit.paused_until ? new Date(habit.paused_until) : null;
   const paused = pausedUntil && pausedUntil > new Date();
-  const emoji = HABITS.find((x) => x.key === habit.habit_key)?.emoji ?? "✨";
+  const emoji = habit.emoji ?? "✨";
 
   async function refresh() {
     await Promise.all([qc.invalidateQueries({ queryKey: ["habits"] }), qc.invalidateQueries({ queryKey: ["fields", habit!.id] })]);
@@ -68,10 +67,10 @@ function MapPage() {
     setBusy(true);
     const { data, error } = await supabase.rpc("complete_field", { _habit: habit!.id });
     setBusy(false);
-    if (error) { toast.error("Nem sikerült menteni"); return; }
+    if (error) { toast.error("Couldn't save"); return; }
     const r = data as { checkpoint: boolean; position: number };
     if (r.checkpoint) setCelebrate(r.position);
-    else toast.success("Szép munka! Jöhet a következő mező.");
+    else toast.success("Nice work! On to the next field.");
     refresh();
   }
 
@@ -80,12 +79,12 @@ function MapPage() {
     const { error } = await supabase.rpc("fail_field", { _habit: habit!.id, _action: action });
     setBusy(false);
     setGiveUpOpen(false);
-    if (error) { toast.error("Nem sikerült menteni"); return; }
+    if (error) { toast.error("Couldn't save"); return; }
     toast(
-      action === "retry" ? "Rendben, a mező a tiéd marad. Próbáld újra!"
-      : action === "easier" ? "Könnyebb változatot kaptál."
-      : action === "pause" ? "Pihenj 24 órát, a haladásod megvan."
-      : "Visszaléptél az utolsó ellenőrzőpont utánra. Új lendület!",
+      action === "retry" ? "Okay — the field stays yours. Try again!"
+      : action === "easier" ? "Here's an easier version."
+      : action === "pause" ? "Rest for 24 hours — your progress is safe."
+      : "You're back just after your last checkpoint. Fresh start!",
     );
     refresh();
   }
@@ -101,13 +100,13 @@ function MapPage() {
               key={x.id} to="/map" search={{ h: x.id }}
               className={`shrink-0 rounded-full px-3 py-1 text-sm font-semibold ${x.id === habit.id ? "bg-primary text-primary-foreground" : "bg-card text-muted-foreground"}`}
             >
-              {HABITS.find((k) => k.key === x.habit_key)?.emoji} {x.name}
+              {x.emoji} {x.name}
             </Link>
           ))}
         </div>
         <div className="mt-2 flex justify-between text-xs text-muted-foreground">
-          <span>Mező {habit.current_position} / {TOTAL}</span>
-          <span>🏁 Biztos pont: {habit.last_checkpoint || "–"}</span>
+          <span>Field {habit.current_position} / {TOTAL}</span>
+          <span>🏁 Safe point: {habit.last_checkpoint || "–"}</span>
         </div>
       </header>
 
@@ -132,7 +131,7 @@ function MapPage() {
                 {!f && !isCp && <Lock className="absolute -right-1 -top-1 size-4" />}
                 {isCur && <span className="absolute -top-7 text-2xl">{emoji}</span>}
               </div>
-              {isCp && <span className="mt-1 text-[10px] font-semibold uppercase tracking-wider text-checkpoint">Ellenőrzőpont {pos}</span>}
+              {isCp && <span className="mt-1 text-[10px] font-semibold uppercase tracking-wider text-checkpoint">Checkpoint {pos}</span>}
             </li>
           );
         })}
@@ -142,19 +141,19 @@ function MapPage() {
         <section className="fixed inset-x-0 bottom-16 z-20 mx-auto max-w-md px-4">
           <div className="rounded-3xl border bg-card p-5 shadow-2xl">
             <div className="flex items-center justify-between text-xs text-muted-foreground">
-              <span>{current.position}. mező {current.is_checkpoint && "· ellenőrzőpont"}</span>
+              <span>{current.position} · field {current.is_checkpoint && "· checkpoint"}</span>
               <Difficulty value={current.difficulty} />
             </div>
             <h2 className="mt-1 text-xl font-semibold">{current.title}</h2>
             <p className="mt-1 text-sm text-muted-foreground">{current.description}</p>
             {paused ? (
               <p className="mt-4 rounded-xl bg-muted p-3 text-sm">
-                Szünet eddig: {pausedUntil!.toLocaleString("hu-HU", { weekday: "short", hour: "2-digit", minute: "2-digit" })}. A haladásod biztonságban van.
+                Paused until: {pausedUntil!.toLocaleString("en-US", { weekday: "short", hour: "2-digit", minute: "2-digit" })}. Your progress is safe.
               </p>
             ) : (
               <div className="mt-4 flex gap-3">
-                <button disabled={busy} onClick={() => setGiveUpOpen(true)} className="flex-1 rounded-2xl border py-3 font-semibold">Feladom</button>
-                <button disabled={busy} onClick={complete} className="flex-[2] rounded-2xl bg-primary py-3 font-display text-lg font-semibold text-primary-foreground">Teljesítve ✓</button>
+                <button disabled={busy} onClick={() => setGiveUpOpen(true)} className="flex-1 rounded-2xl border py-3 font-semibold">I didn't make it</button>
+                <button disabled={busy} onClick={complete} className="flex-[2] rounded-2xl bg-primary py-3 font-display text-lg font-semibold text-primary-foreground">Done ✓</button>
               </div>
             )}
           </div>
@@ -163,18 +162,18 @@ function MapPage() {
 
       {giveUpOpen && (
         <Overlay onClose={() => setGiveUpOpen(false)}>
-          <h2 className="text-2xl font-bold">Semmi baj.</h2>
-          <p className="mt-1 text-sm text-muted-foreground">Ezt a mezőt nem veszíted el. Mit szeretnél?</p>
+          <h2 className="text-2xl font-bold">That's okay.</h2>
+          <p className="mt-1 text-sm text-muted-foreground">You won't lose this field. What would you like to do?</p>
           <div className="mt-5 space-y-3">
-            <Option onClick={() => fail("retry")} title="Újrapróbálom" desc="Marad ez a kihívás." />
-            <Option onClick={() => fail("easier")} title="Könnyebb változat" desc="Kisebb lépés, ugyanazon a mezőn." />
-            <Option onClick={() => fail("pause")} title="Szünet 24 órára" desc="Pihenj, holnap folytatod." />
+            <Option onClick={() => fail("retry")} title="Try again" desc="Keep this challenge." />
+            <Option onClick={() => fail("easier")} title="Easier version" desc="A smaller step on the same field." />
+            <Option onClick={() => fail("pause")} title="Pause for 24 hours" desc="Rest, continue tomorrow." />
             {habit.consecutive_failures >= 3 && (
-              <Option onClick={() => fail("fallback")} title="Visszalépés az ellenőrzőpontra" desc={`Újrakezdés a ${habit.last_checkpoint + 1}. mezőtől. Ami előtte van, megmarad.`} />
+              <Option onClick={() => fail("fallback")} title="Go back to checkpoint" desc={`Restart from field ${habit.last_checkpoint + 1}. Everything before stays.`} />
             )}
           </div>
           {habit.consecutive_failures > 0 && habit.consecutive_failures < 3 && (
-            <p className="mt-4 text-xs text-muted-foreground">Egymás utáni próbálkozások: {habit.consecutive_failures}. Visszalépni csak 3 után lehet – és csak ha te akarod.</p>
+            <p className="mt-4 text-xs text-muted-foreground">Attempts in a row: {habit.consecutive_failures}. Going back is only possible after 3 — and only if you want to.</p>
           )}
         </Overlay>
       )}
@@ -183,9 +182,9 @@ function MapPage() {
         <Overlay onClose={() => setCelebrate(null)}>
           <Confetti />
           <div className="celebrate mx-auto flex size-28 items-center justify-center rounded-full bg-checkpoint text-5xl node-checkpoint">🏆</div>
-          <h2 className="mt-5 text-center text-3xl font-bold">Ellenőrzőpont {celebrate}!</h2>
-          <p className="mt-2 text-center text-muted-foreground">Ezt már senki nem veheti el tőled. Innen soha nem esel vissza.</p>
-          <button onClick={() => setCelebrate(null)} className="mt-6 w-full rounded-2xl bg-checkpoint py-3 font-display text-lg font-semibold text-checkpoint-foreground">Tovább!</button>
+          <h2 className="mt-5 text-center text-3xl font-bold">Checkpoint {celebrate}!</h2>
+          <p className="mt-2 text-center text-muted-foreground">No one can take this from you. You'll never fall below it.</p>
+          <button onClick={() => setCelebrate(null)} className="mt-6 w-full rounded-2xl bg-checkpoint py-3 font-display text-lg font-semibold text-checkpoint-foreground">Onward!</button>
         </Overlay>
       )}
 
@@ -196,7 +195,7 @@ function MapPage() {
 
 function Difficulty({ value }: { value: number }) {
   return (
-    <span className="flex items-center gap-0.5" aria-label={`Nehézség ${value}/10`}>
+    <span className="flex items-center gap-0.5" aria-label={`Difficulty ${value}/10`}>
       {Array.from({ length: 10 }, (_, i) => (
         <span key={i} className={`h-2 w-1.5 rounded-full ${i < value ? "bg-primary" : "bg-locked"}`} />
       ))}

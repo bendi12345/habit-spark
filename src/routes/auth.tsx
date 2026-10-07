@@ -7,10 +7,10 @@ import { lovable } from "@/integrations/lovable/index";
 export const Route = createFileRoute("/auth")({
   head: () => ({
     meta: [
-      { title: "Belépés – Szokásváltó" },
-      { name: "description", content: "Lépj be vagy regisztrálj a Szokásváltóba." },
-      { property: "og:title", content: "Belépés – Szokásváltó" },
-      { property: "og:description", content: "Lépj be vagy regisztrálj." },
+      { title: "Sign in – Habit Shift" },
+      { name: "description", content: "Sign in or create your Habit Shift account." },
+      { property: "og:title", content: "Sign in – Habit Shift" },
+      { property: "og:description", content: "Sign in or sign up." },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary" },
     ],
@@ -42,7 +42,7 @@ function AuthPage() {
         navigate({ to: "/map" });
       }
     } catch (err) {
-      toast.error(err instanceof Error ? err.message : "Hiba történt");
+      toast.error(err instanceof Error ? err.message : "Something went wrong");
     } finally {
       setBusy(false);
     }
@@ -50,7 +50,7 @@ function AuthPage() {
 
   async function google() {
     const r = await lovable.auth.signInWithOAuth("google", { redirect_uri: window.location.origin + "/auth" });
-    if (r.error) { toast.error("Google belépés sikertelen"); return; }
+    if (r.error) { toast.error("Google sign-in failed"); return; }
     if (r.redirected) return;
     navigate({ to: "/map" });
   }
@@ -59,28 +59,28 @@ function AuthPage() {
 
   return (
     <main className="mx-auto flex min-h-dvh max-w-md flex-col justify-center px-6">
-      <h1 className="text-4xl font-bold">{mode === "in" ? "Üdv újra!" : "Kezdjük el"}</h1>
-      <p className="mt-2 text-muted-foreground">{mode === "in" ? "Folytasd ott, ahol abbahagytad." : "Hozd létre a fiókod."}</p>
+      <h1 className="text-4xl font-bold">{mode === "in" ? "Welcome back!" : "Let's begin"}</h1>
+      <p className="mt-2 text-muted-foreground">{mode === "in" ? "Pick up where you left off." : "Create your account."}</p>
 
       {sent ? (
         <div className="mt-8 rounded-2xl bg-card p-5">
-          <p className="font-semibold">Nézd meg az e-mailjeidet!</p>
-          <p className="mt-1 text-sm text-muted-foreground">Küldtünk egy megerősítő linket a(z) {email} címre.</p>
+          <p className="font-semibold">Check your email!</p>
+          <p className="mt-1 text-sm text-muted-foreground">We sent a confirmation link to {email}.</p>
         </div>
       ) : (
         <>
           <form onSubmit={submit} className="mt-8 space-y-3">
-            <input className={input} type="email" required placeholder="E-mail" value={email} onChange={(e) => setEmail(e.target.value)} />
-            <input className={input} type="password" required minLength={6} placeholder="Jelszó" value={password} onChange={(e) => setPassword(e.target.value)} />
+            <input className={input} type="email" required placeholder="Email" value={email} onChange={(e) => setEmail(e.target.value)} />
+            <input className={input} type="password" required minLength={6} placeholder="Password" value={password} onChange={(e) => setPassword(e.target.value)} />
             <button disabled={busy} className="w-full rounded-xl bg-primary py-3 font-display text-lg font-semibold text-primary-foreground disabled:opacity-60">
-              {mode === "in" ? "Belépés" : "Regisztráció"}
+              {mode === "in" ? "Sign in" : "Sign up"}
             </button>
           </form>
           <button onClick={google} className="mt-3 w-full rounded-xl border bg-card py-3 font-semibold">
-            Folytatás Google-fiókkal
+            Continue with Google
           </button>
           <button onClick={() => setMode(mode === "in" ? "up" : "in")} className="mt-6 text-sm text-muted-foreground underline">
-            {mode === "in" ? "Még nincs fiókod? Regisztrálj" : "Van már fiókod? Lépj be"}
+            {mode === "in" ? "No account yet? Sign up" : "Have an account? Sign in"}
           </button>
         </>
       )}
