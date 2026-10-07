@@ -15,6 +15,13 @@
       "when": 1791414536924,
       "tag": "0001_habit_free_text",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1791414675642,
+      "tag": "0002_fail_field_english",
+      "breakpoints": true
     }
   ]
 }

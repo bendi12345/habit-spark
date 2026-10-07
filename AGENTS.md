@@ -11,5 +11,5 @@
 
 ## Architecture rules
 - Game-state transitions (complete/fail/fallback) live in SQL RPCs `complete_field` / `fail_field` — keeps checkpoint and 3-failure rules atomic and server-enforced.
-- Starter path comes from `src/lib/path-template.ts` (sawtooth); later AI generation should produce the same field shape.
-- Signed-in screens live under `src/routes/_authenticated/`; UI copy is Hungarian.
+- Paths are AI-generated server-side in `src/lib/path-ai.functions.ts`; difficulty sawtooth is computed in code, AI only writes text — keeps the shape deterministic.
+- Signed-in screens live under `src/routes/_authenticated/`; UI copy is English.
