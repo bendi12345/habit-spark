@@ -22,6 +22,13 @@
       "when": 1791414675642,
       "tag": "0002_fail_field_english",
       "breakpoints": true
+    },
+    {
+      "idx": 3,
+      "version": "7",
+      "when": 1791450490777,
+      "tag": "0003_economy_social",
+      "breakpoints": true
     }
   ]
 }
