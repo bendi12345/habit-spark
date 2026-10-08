@@ -86,3 +86,23 @@
 @keyframes pulse-node { 0%,100% { transform: scale(1); } 50% { transform: scale(1.08); } }
 @keyframes celebrate { 0% { transform: scale(.3) rotate(-20deg); opacity: 0; } 100% { transform: scale(1) rotate(0); opacity: 1; } }
 @keyframes confetti-fall { 0% { transform: translateY(-20px) rotate(0); opacity: 1; } 100% { transform: translateY(260px) rotate(540deg); opacity: 0; } }
+@keyframes coin-fall { 0% { transform: translateY(-20px) rotate(0) scale(.7); opacity: 0; } 15% { opacity: 1; } 100% { transform: translateY(340px) rotate(720deg) scale(1.1); opacity: 0; } }
+.animate-coin-fall { animation: coin-fall 2.4s ease-in forwards; }
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    scroll-behavior: auto !important;
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+:root[data-reduced-motion="true"] *,
+:root[data-reduced-motion="true"] *::before,
+:root[data-reduced-motion="true"] *::after {
+  scroll-behavior: auto !important;
+  animation-duration: 0.01ms !important;
+  animation-iteration-count: 1 !important;
+  transition-duration: 0.01ms !important;
+}
