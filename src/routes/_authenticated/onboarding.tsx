@@ -41,7 +41,7 @@ function Onboarding() {
     setBusy("Reading your description…");
     const r = await interpret({ data: { habit, goal, answers: ans } });
     setBusy(null);
-    if (!r.ok) return toast.error(r.error);
+    if (!r.ok) { toast.error(r.error); return; }
     setInterp({ name: r.name, emoji: r.emoji, interpretation: r.interpretation, withdrawal_risk: r.withdrawal_risk });
     if (r.needs_clarification && r.questions.length) {
       setQuestions(r.questions); setDraft(r.questions.map(() => "")); setStep("clarify");
@@ -57,7 +57,7 @@ function Onboarding() {
     setBusy("Building your path…");
     const r = await generate({ data: { interpretation: interp.interpretation, habit: fullContext(), goal, intensity, withdrawal_risk: interp.withdrawal_risk } });
     setBusy(null);
-    if (!r.ok) return toast.error(r.error);
+    if (!r.ok) { toast.error(r.error); return; }
     setFields(r.fields); setStep("edit");
   }
 
@@ -66,8 +66,8 @@ function Onboarding() {
     setBusy(`Rerolling field ${pos}…`);
     const r = await generate({ data: { interpretation: interp.interpretation, habit: fullContext(), goal, intensity, withdrawal_risk: interp.withdrawal_risk, reroll: { position: pos, existing: fields.map((f) => f.title) } } });
     setBusy(null);
-    if (!r.ok) return toast.error(r.error);
-    setFields((fs) => fs.map((f) => (f.position === pos ? r.fields[0] : f)));
+    if (!r.ok) { toast.error(r.error); return; }
+    setFields((fs) => fs.map((f) => (f.position === pos && r.fields[0] ? r.fields[0] : f)));
   }
 
   function edit(pos: number, patch: Partial<AiField>) {
@@ -80,11 +80,11 @@ function Onboarding() {
     const { data: h, error } = await supabase.from("habits")
       .insert({ habit_key: "custom", name: interp.name, emoji: interp.emoji, goal: goal || null, intensity, free_text: fullContext(), ai_interpretation: interp.interpretation })
       .select().single();
-    if (error || !h) { setBusy(null); return toast.error("Couldn't create the habit"); }
+    if (error || !h) { setBusy(null); toast.error("Couldn't create the habit"); return; }
     const rows = fields.map((f) => ({ ...f, habit_id: h.id, status: f.position === 1 ? "current" : "locked" }));
     const { error: e2 } = await supabase.from("fields").insert(rows);
     setBusy(null);
-    if (e2) return toast.error("Couldn't save the path");
+    if (e2) { toast.error("Couldn't save the path"); return; }
     await qc.invalidateQueries({ queryKey: ["habits"] });
     navigate({ to: "/map", search: { h: h.id } });
   }
@@ -123,7 +123,7 @@ function Onboarding() {
             ))}
           </div>
           <button disabled={draft.some((d) => !d.trim())} onClick={() => {
-            const next = [...answers, ...questions.map((q, i) => ({ q, a: draft[i] }))];
+            const next = [...answers, ...questions.map((q, i) => ({ q, a: draft[i] ?? "" }))];
             setAnswers(next); runInterpret(next);
           }} className={`mt-6 ${primary}`}>Continue</button>
         </>
