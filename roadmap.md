@@ -6,3 +6,4 @@
 - [x] Core: AI free-text path generator, English UI, black/gray/yellow theme
 - [ ] Next brief: feedback effects / in-app features (see uploaded "Extend the app with feedback effects…")
 - [ ] Later from Hungarian brief: long questionnaire, full settings, profile, friends placeholders
+- [ ] Social module brief (friends, groups, duels — see uploaded "Extend the app with the social module…")
