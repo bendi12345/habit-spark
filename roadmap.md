@@ -10,3 +10,4 @@
 - [ ] Auto-generate more fields near path end
 - [ ] Personal 1-10 difficulty ratings adapting upcoming fields (feedback + history)
 - [x] GitHub export (answered: connect via + → GitHub)
+- [ ] Apply contents of github.com/bendi12345/habit-spark to this project
