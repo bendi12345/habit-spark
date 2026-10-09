@@ -64,6 +64,13 @@
       "when": 1791462000000,
       "tag": "0008_field_proofs",
       "breakpoints": true
+    },
+    {
+      "idx": 9,
+      "version": "7",
+      "when": 1791550791060,
+      "tag": "0009_difficulty_reason",
+      "breakpoints": true
     }
   ]
 }
