@@ -24,3 +24,24 @@ describe("personalized path difficulty", () => {
     expect(proofTypeForDifficulty(10)).toBe("photo");
   });
 });
+
+import { computeShift, personalDifficulty } from "./path-generation";
+
+describe("personal difficulty adaptation", () => {
+  it("keeps every shifted block sawtooth-shaped", () => {
+    for (const shift of [-3, -1, 0, 2]) {
+      for (let block = 0; block < 12; block += 1) {
+        const d = Array.from({ length: 5 }, (_, o) => personalDifficulty(block * 5 + o + 1, 2, shift));
+        expect(d[4]!).toBe(Math.max(...d));
+        expect(d[4]!).toBeGreaterThan(d[0]!);
+        expect(d.every((x) => x >= 1 && x <= 10)).toBe(true);
+      }
+    }
+  });
+
+  it("eases up when steps feel harder than planned or fail often", () => {
+    expect(computeShift([])).toBe(0);
+    expect(computeShift([{ planned: 4, rating: 9, outcome: "failed" }, { planned: 5, rating: 9, outcome: "failed" }])).toBeLessThan(0);
+    expect(computeShift([{ planned: 6, rating: 2, outcome: "completed" }, { planned: 6, rating: 2, outcome: "completed" }])).toBeGreaterThan(0);
+  });
+});
