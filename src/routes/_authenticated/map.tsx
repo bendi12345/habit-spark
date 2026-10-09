@@ -5,7 +5,9 @@ import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
 import { Check, List, Lock, Map as MapIcon, X } from "lucide-react";
 import { buildWindingPath, getFieldNodeState, getWindingOffset } from "@/lib/path-map";
-import { proofTypeForDifficulty } from "@/lib/path-generation";
+import { EXTEND_THRESHOLD, proofTypeForDifficulty } from "@/lib/path-generation";
+import { useServerFn } from "@tanstack/react-start";
+import { extendPath, recalibratePath } from "@/lib/path-adapt.functions";
 
 export const Route = createFileRoute("/_authenticated/map")({
   validateSearch: (s: Record<string, unknown>): { h?: string } => (typeof s["h"] === "string" ? { h: s["h"] } : {}),
@@ -33,6 +35,10 @@ function MapPage() {
   const [proofBusy, setProofBusy] = useState(false);
   const [honorConfirmed, setHonorConfirmed] = useState(false);
   const currentRef = useRef<HTMLButtonElement>(null);
+  const extendFn = useServerFn(extendPath);
+  const recalibrateFn = useServerFn(recalibratePath);
+  const extendTried = useRef<string>("");
+  const [extending, setExtending] = useState(false);
 
   const habits = useQuery({
     queryKey: ["habits"],
@@ -70,6 +76,23 @@ function MapPage() {
       return data;
     },
   });
+
+  useEffect(() => {
+    if (!habit || !fields.data?.length) return;
+    const last = fields.data[fields.data.length - 1]!.position;
+    const key = `${habit.id}:${last}`;
+    if (last - habit.current_position > EXTEND_THRESHOLD || extendTried.current === key) return;
+    extendTried.current = key;
+    setExtending(true);
+    void extendFn({ data: { habitId: habit.id } }).then(async (r) => {
+      setExtending(false);
+      if (!r.ok) { toast.error(r.error); return; }
+      if (r.added > 0) {
+        toast.success(`${r.added} new steps were added to your path.`);
+        await qc.invalidateQueries({ queryKey: ["fields", habit.id] });
+      }
+    });
+  }, [habit, fields.data, extendFn, qc]);
 
   useEffect(() => {
     if (habits.data && habits.data.length === 0) navigate({ to: "/onboarding" });
@@ -236,6 +259,12 @@ function MapPage() {
     }
     toast.success("Köszönjük, az értékelésed elmentettük.");
     setRatingTarget(null);
+    const r = await recalibrateFn({ data: { habitId: habit!.id } });
+    if (!r.ok) toast.error(r.error);
+    else if (r.updated > 0) {
+      toast(r.shift < 0 ? "A következő lépéseket kicsit szelídebbre igazítottuk." : "A következő lépéseket az értékeléseidhez igazítottuk.");
+      await qc.invalidateQueries({ queryKey: ["fields", habit!.id] });
+    }
   }
 
   async function fail(action: "retry" | "easier" | "pause" | "fallback") {
@@ -424,7 +453,7 @@ function MapPage() {
 
       {pathLength > 0 && habit.current_position > pathLength && (
         <p className="mx-4 mt-5 rounded-2xl border bg-card p-4 text-sm text-muted-foreground">
-          Az útvonal jelenlegi összes feladatát teljesítetted. A folytatás új feladatok hozzáadásakor jelenik meg itt.
+          {extending ? "Új feladatokat készítünk neked…" : "Az útvonal jelenlegi összes feladatát teljesítetted. A folytatás új feladatok hozzáadásakor jelenik meg itt."}
         </p>
       )}
 
