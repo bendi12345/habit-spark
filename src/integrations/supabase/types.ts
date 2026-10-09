@@ -172,8 +172,6 @@ export type Database = {
           flagged: boolean
           id: string
           proof: string | null
-          proof_status: string
-          submitted_at: string | null
           title: string
           user_id: string
         }
@@ -184,8 +182,6 @@ export type Database = {
           flagged?: boolean
           id?: string
           proof?: string | null
-          proof_status?: string
-          submitted_at?: string | null
           title: string
           user_id: string
         }
@@ -196,8 +192,6 @@ export type Database = {
           flagged?: boolean
           id?: string
           proof?: string | null
-          proof_status?: string
-          submitted_at?: string | null
           title?: string
           user_id?: string
         }
@@ -390,85 +384,6 @@ export type Database = {
           },
         ]
       }
-      field_proofs: {
-        Row: {
-          created_at: string
-          field_id: string
-          id: string
-          proof_text: string | null
-          proof_type: string
-          review_reason: string | null
-          status: string
-          storage_path: string | null
-          user_id: string
-        }
-        Insert: {
-          created_at?: string
-          field_id: string
-          id?: string
-          proof_text?: string | null
-          proof_type: string
-          review_reason?: string | null
-          status?: string
-          storage_path?: string | null
-          user_id?: string
-        }
-        Update: {
-          created_at?: string
-          field_id?: string
-          id?: string
-          proof_text?: string | null
-          proof_type?: string
-          review_reason?: string | null
-          status?: string
-          storage_path?: string | null
-          user_id?: string
-        }
-        Relationships: [
-          {
-            foreignKeyName: "field_proofs_field_id_fkey"
-            columns: ["field_id"]
-            isOneToOne: false
-            referencedRelation: "fields"
-            referencedColumns: ["id"]
-          },
-        ]
-      }
-      difficulty_history: {
-        Row: {
-          created_at: string
-          field_id: string
-          id: string
-          rating: number
-          user_id: string
-          attempt_outcome: string
-        }
-        Insert: {
-          created_at?: string
-          field_id: string
-          id?: string
-          rating: number
-          user_id?: string
-          attempt_outcome: string
-        }
-        Update: {
-          created_at?: string
-          field_id?: string
-          id?: string
-          rating?: number
-          user_id?: string
-          attempt_outcome?: string
-        }
-        Relationships: [
-          {
-            foreignKeyName: "difficulty_history_field_id_fkey"
-            columns: ["field_id"]
-            isOneToOne: false
-            referencedRelation: "fields"
-            referencedColumns: ["id"]
-          },
-        ]
-      }
       friendships: {
         Row: {
           addressee: string
@@ -624,7 +539,6 @@ export type Database = {
           display_name: string | null
           id: string
           invite_code: string | null
-          onboarding_answers: Json
           pinned_badges: string[]
           szikra: number
           username: string | null
@@ -635,7 +549,6 @@ export type Database = {
           display_name?: string | null
           id: string
           invite_code?: string | null
-          onboarding_answers?: Json
           pinned_badges?: string[]
           szikra?: number
           username?: string | null
@@ -646,39 +559,12 @@ export type Database = {
           display_name?: string | null
           id?: string
           invite_code?: string | null
-          onboarding_answers?: Json
           pinned_badges?: string[]
           szikra?: number
           username?: string | null
           xp?: number
         }
         Relationships: []
-      }
-      peer_confirmations: {
-        Row: {
-          confirmed_at: string
-          confirmer: string
-          feed_id: string
-        }
-        Insert: {
-          confirmed_at?: string
-          confirmer: string
-          feed_id: string
-        }
-        Update: {
-          confirmed_at?: string
-          confirmer?: string
-          feed_id?: string
-        }
-        Relationships: [
-          {
-            foreignKeyName: "peer_confirmations_feed_id_fkey"
-            columns: ["feed_id"]
-            isOneToOne: false
-            referencedRelation: "activity_feed"
-            referencedColumns: ["id"]
-          },
-        ]
       }
       shop_items: {
         Row: {
@@ -818,10 +704,6 @@ export type Database = {
         Returns: undefined
       }
       accept_duel: { Args: { _duel: string }; Returns: Json }
-      accept_duel_with_challenge: {
-        Args: { _description: string; _duel: string; _title: string }
-        Returns: Json
-      }
       add_friend: { Args: { _handle: string }; Returns: Json }
       are_friends: { Args: { _a: string; _b: string }; Returns: boolean }
       buy_item: { Args: { _code: string }; Returns: Json }
@@ -830,19 +712,7 @@ export type Database = {
         Args: { _duel: string; _proof: string }
         Returns: Json
       }
-      create_duel_with_challenge: {
-        Args: {
-          _description: string
-          _difficulty: number
-          _days: number
-          _opponent: string
-          _stake: number
-          _title: string
-        }
-        Returns: string
-      }
       complete_field: { Args: { _habit: string }; Returns: Json }
-      confirm_group_proof: { Args: { _feed: string }; Returns: undefined }
       counter_duel: {
         Args: { _duel: string; _stake: number }
         Returns: undefined
@@ -927,25 +797,6 @@ export type Database = {
           their_title: string
         }[]
       }
-      my_groups: {
-        Args: never
-        Returns: {
-          id: string
-          invite_code: string
-          member_count: number
-          name: string
-          owner: string
-        }[]
-      }
-      my_duel_progress: {
-        Args: never
-        Returns: {
-          duel_id: string
-          flagged: boolean
-          progress: string
-          user_id: string
-        }[]
-      }
       redeem_reward: { Args: { _id: string }; Returns: Json }
       respond_friend: {
         Args: { _accept: boolean; _id: string }
@@ -954,14 +805,6 @@ export type Database = {
       reward_for: {
         Args: { _checkpoint: boolean; _difficulty: number }
         Returns: Json
-      }
-      review_duel_proof: {
-        Args: { _approved: boolean; _duel: string; _proof_owner: string }
-        Returns: Json
-      }
-      set_duel_challenge: {
-        Args: { _description: string; _duel: string; _title: string }
-        Returns: undefined
       }
       set_pinned_badges: { Args: { _codes: string[] }; Returns: undefined }
       stake_cap: { Args: { _a: string; _b: string }; Returns: number }
