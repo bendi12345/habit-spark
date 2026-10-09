@@ -7,3 +7,6 @@
 - [ ] Next brief: feedback effects / in-app features (see uploaded "Extend the app with feedback effects…")
 - [ ] Later from Hungarian brief: long questionnaire, full settings, profile, friends placeholders
 - [ ] Social module brief (friends, groups, duels — see uploaded "Extend the app with the social module…")
+- [ ] Auto-generate more fields near path end
+- [ ] Personal 1-10 difficulty ratings adapting upcoming fields (feedback + history)
+- [x] GitHub export (answered: connect via + → GitHub)
