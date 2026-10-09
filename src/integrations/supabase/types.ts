@@ -143,6 +143,41 @@ export type Database = {
         }
         Relationships: []
       }
+      difficulty_history: {
+        Row: {
+          attempt_outcome: string
+          created_at: string
+          field_id: string
+          id: string
+          rating: number
+          user_id: string
+        }
+        Insert: {
+          attempt_outcome: string
+          created_at?: string
+          field_id: string
+          id?: string
+          rating: number
+          user_id?: string
+        }
+        Update: {
+          attempt_outcome?: string
+          created_at?: string
+          field_id?: string
+          id?: string
+          rating?: number
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "difficulty_history_field_id_fkey"
+            columns: ["field_id"]
+            isOneToOne: false
+            referencedRelation: "fields"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       duel_badges: {
         Row: {
           last_earned: string
@@ -172,6 +207,8 @@ export type Database = {
           flagged: boolean
           id: string
           proof: string | null
+          proof_status: string
+          submitted_at: string | null
           title: string
           user_id: string
         }
@@ -182,6 +219,8 @@ export type Database = {
           flagged?: boolean
           id?: string
           proof?: string | null
+          proof_status?: string
+          submitted_at?: string | null
           title: string
           user_id: string
         }
@@ -192,6 +231,8 @@ export type Database = {
           flagged?: boolean
           id?: string
           proof?: string | null
+          proof_status?: string
+          submitted_at?: string | null
           title?: string
           user_id?: string
         }
@@ -337,11 +378,56 @@ export type Database = {
           },
         ]
       }
+      field_proofs: {
+        Row: {
+          created_at: string
+          field_id: string
+          id: string
+          proof_text: string | null
+          proof_type: string
+          review_reason: string | null
+          status: string
+          storage_path: string | null
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          field_id: string
+          id?: string
+          proof_text?: string | null
+          proof_type: string
+          review_reason?: string | null
+          status?: string
+          storage_path?: string | null
+          user_id?: string
+        }
+        Update: {
+          created_at?: string
+          field_id?: string
+          id?: string
+          proof_text?: string | null
+          proof_type?: string
+          review_reason?: string | null
+          status?: string
+          storage_path?: string | null
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "field_proofs_field_id_fkey"
+            columns: ["field_id"]
+            isOneToOne: false
+            referencedRelation: "fields"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       fields: {
         Row: {
           created_at: string
           description: string
           difficulty: number
+          difficulty_reason: string | null
           habit_id: string
           id: string
           is_checkpoint: boolean
@@ -354,6 +440,7 @@ export type Database = {
           created_at?: string
           description?: string
           difficulty: number
+          difficulty_reason?: string | null
           habit_id: string
           id?: string
           is_checkpoint?: boolean
@@ -366,6 +453,7 @@ export type Database = {
           created_at?: string
           description?: string
           difficulty?: number
+          difficulty_reason?: string | null
           habit_id?: string
           id?: string
           is_checkpoint?: boolean
@@ -488,6 +576,7 @@ export type Database = {
           consecutive_failures: number
           created_at: string
           current_position: number
+          difficulty_shift: number
           emoji: string
           free_text: string | null
           goal: string | null
@@ -504,6 +593,7 @@ export type Database = {
           consecutive_failures?: number
           created_at?: string
           current_position?: number
+          difficulty_shift?: number
           emoji?: string
           free_text?: string | null
           goal?: string | null
@@ -520,6 +610,7 @@ export type Database = {
           consecutive_failures?: number
           created_at?: string
           current_position?: number
+          difficulty_shift?: number
           emoji?: string
           free_text?: string | null
           goal?: string | null
@@ -533,12 +624,39 @@ export type Database = {
         }
         Relationships: []
       }
+      peer_confirmations: {
+        Row: {
+          confirmed_at: string
+          confirmer: string
+          feed_id: string
+        }
+        Insert: {
+          confirmed_at?: string
+          confirmer: string
+          feed_id: string
+        }
+        Update: {
+          confirmed_at?: string
+          confirmer?: string
+          feed_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "peer_confirmations_feed_id_fkey"
+            columns: ["feed_id"]
+            isOneToOne: false
+            referencedRelation: "activity_feed"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       profiles: {
         Row: {
           created_at: string
           display_name: string | null
           id: string
           invite_code: string | null
+          onboarding_answers: Json
           pinned_badges: string[]
           szikra: number
           username: string | null
@@ -549,6 +667,7 @@ export type Database = {
           display_name?: string | null
           id: string
           invite_code?: string | null
+          onboarding_answers?: Json
           pinned_badges?: string[]
           szikra?: number
           username?: string | null
@@ -559,6 +678,7 @@ export type Database = {
           display_name?: string | null
           id?: string
           invite_code?: string | null
+          onboarding_answers?: Json
           pinned_badges?: string[]
           szikra?: number
           username?: string | null
@@ -704,6 +824,10 @@ export type Database = {
         Returns: undefined
       }
       accept_duel: { Args: { _duel: string }; Returns: Json }
+      accept_duel_with_challenge: {
+        Args: { _description: string; _duel: string; _title: string }
+        Returns: Json
+      }
       add_friend: { Args: { _handle: string }; Returns: Json }
       are_friends: { Args: { _a: string; _b: string }; Returns: boolean }
       buy_item: { Args: { _code: string }; Returns: Json }
@@ -713,6 +837,7 @@ export type Database = {
         Returns: Json
       }
       complete_field: { Args: { _habit: string }; Returns: Json }
+      confirm_group_proof: { Args: { _feed: string }; Returns: undefined }
       counter_duel: {
         Args: { _duel: string; _stake: number }
         Returns: undefined
@@ -723,6 +848,17 @@ export type Database = {
           _difficulty: number
           _opponent: string
           _stake: number
+        }
+        Returns: string
+      }
+      create_duel_with_challenge: {
+        Args: {
+          _days: number
+          _description: string
+          _difficulty: number
+          _opponent: string
+          _stake: number
+          _title: string
         }
         Returns: string
       }
@@ -772,6 +908,15 @@ export type Database = {
       is_duelist: { Args: { _d: string; _u: string }; Returns: boolean }
       is_group_member: { Args: { _g: string; _u: string }; Returns: boolean }
       join_group: { Args: { _code: string }; Returns: string }
+      my_duel_progress: {
+        Args: never
+        Returns: {
+          duel_id: string
+          flagged: boolean
+          progress: string
+          user_id: string
+        }[]
+      }
       my_duels: {
         Args: never
         Returns: {
@@ -797,14 +942,32 @@ export type Database = {
           their_title: string
         }[]
       }
+      my_groups: {
+        Args: never
+        Returns: {
+          id: string
+          invite_code: string
+          member_count: number
+          name: string
+          owner: string
+        }[]
+      }
       redeem_reward: { Args: { _id: string }; Returns: Json }
       respond_friend: {
         Args: { _accept: boolean; _id: string }
         Returns: undefined
       }
+      review_duel_proof: {
+        Args: { _approved: boolean; _duel: string; _proof_owner: string }
+        Returns: Json
+      }
       reward_for: {
         Args: { _checkpoint: boolean; _difficulty: number }
         Returns: Json
+      }
+      set_duel_challenge: {
+        Args: { _description: string; _duel: string; _title: string }
+        Returns: undefined
       }
       set_pinned_badges: { Args: { _codes: string[] }; Returns: undefined }
       stake_cap: { Args: { _a: string; _b: string }; Returns: number }
