@@ -15,12 +15,14 @@ import { Route as AuthRouteImport } from './routes/auth'
 import { Route as DemoRouteImport } from './routes/demo'
 import { Route as AuthenticatedCoachRouteImport } from './routes/_authenticated/coach'
 import { Route as AuthenticatedFriendsRouteImport } from './routes/_authenticated/friends'
+import { Route as AuthenticatedHistoryRouteImport } from './routes/_authenticated/history'
 import { Route as AuthenticatedHomeRouteImport } from './routes/_authenticated/home'
 import { Route as AuthenticatedMapRouteImport } from './routes/_authenticated/map'
 import { Route as AuthenticatedOnboardingRouteImport } from './routes/_authenticated/onboarding'
 import { Route as AuthenticatedProfileRouteImport } from './routes/_authenticated/profile'
 import { Route as AuthenticatedQuestionnaireRouteImport } from './routes/_authenticated/questionnaire'
 import { Route as AuthenticatedSettingsRouteImport } from './routes/_authenticated/settings'
+import { Route as AuthenticatedShopRouteImport } from './routes/_authenticated/shop'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
@@ -49,6 +51,11 @@ const AuthenticatedCoachRoute = AuthenticatedCoachRouteImport.update({
 const AuthenticatedFriendsRoute = AuthenticatedFriendsRouteImport.update({
   id: '/friends',
   path: '/friends',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
+const AuthenticatedHistoryRoute = AuthenticatedHistoryRouteImport.update({
+  id: '/history',
+  path: '/history',
   getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
 const AuthenticatedHomeRoute = AuthenticatedHomeRouteImport.update({
@@ -82,6 +89,11 @@ const AuthenticatedSettingsRoute = AuthenticatedSettingsRouteImport.update({
   path: '/settings',
   getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
+const AuthenticatedShopRoute = AuthenticatedShopRouteImport.update({
+  id: '/shop',
+  path: '/shop',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -89,12 +101,14 @@ export interface FileRoutesByFullPath {
   '/demo': typeof DemoRoute
   '/coach': typeof AuthenticatedCoachRoute
   '/friends': typeof AuthenticatedFriendsRoute
+  '/history': typeof AuthenticatedHistoryRoute
   '/home': typeof AuthenticatedHomeRoute
   '/map': typeof AuthenticatedMapRoute
   '/onboarding': typeof AuthenticatedOnboardingRoute
   '/profile': typeof AuthenticatedProfileRoute
   '/questionnaire': typeof AuthenticatedQuestionnaireRoute
   '/settings': typeof AuthenticatedSettingsRoute
+  '/shop': typeof AuthenticatedShopRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -102,12 +116,14 @@ export interface FileRoutesByTo {
   '/demo': typeof DemoRoute
   '/coach': typeof AuthenticatedCoachRoute
   '/friends': typeof AuthenticatedFriendsRoute
+  '/history': typeof AuthenticatedHistoryRoute
   '/home': typeof AuthenticatedHomeRoute
   '/map': typeof AuthenticatedMapRoute
   '/onboarding': typeof AuthenticatedOnboardingRoute
   '/profile': typeof AuthenticatedProfileRoute
   '/questionnaire': typeof AuthenticatedQuestionnaireRoute
   '/settings': typeof AuthenticatedSettingsRoute
+  '/shop': typeof AuthenticatedShopRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -117,12 +133,14 @@ export interface FileRoutesById {
   '/demo': typeof DemoRoute
   '/_authenticated/coach': typeof AuthenticatedCoachRoute
   '/_authenticated/friends': typeof AuthenticatedFriendsRoute
+  '/_authenticated/history': typeof AuthenticatedHistoryRoute
   '/_authenticated/home': typeof AuthenticatedHomeRoute
   '/_authenticated/map': typeof AuthenticatedMapRoute
   '/_authenticated/onboarding': typeof AuthenticatedOnboardingRoute
   '/_authenticated/profile': typeof AuthenticatedProfileRoute
   '/_authenticated/questionnaire': typeof AuthenticatedQuestionnaireRoute
   '/_authenticated/settings': typeof AuthenticatedSettingsRoute
+  '/_authenticated/shop': typeof AuthenticatedShopRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -132,12 +150,14 @@ export interface FileRouteTypes {
     | '/demo'
     | '/coach'
     | '/friends'
+    | '/history'
     | '/home'
     | '/map'
     | '/onboarding'
     | '/profile'
     | '/questionnaire'
     | '/settings'
+    | '/shop'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -145,12 +165,14 @@ export interface FileRouteTypes {
     | '/demo'
     | '/coach'
     | '/friends'
+    | '/history'
     | '/home'
     | '/map'
     | '/onboarding'
     | '/profile'
     | '/questionnaire'
     | '/settings'
+    | '/shop'
   id:
     | '__root__'
     | '/'
@@ -159,12 +181,14 @@ export interface FileRouteTypes {
     | '/demo'
     | '/_authenticated/coach'
     | '/_authenticated/friends'
+    | '/_authenticated/history'
     | '/_authenticated/home'
     | '/_authenticated/map'
     | '/_authenticated/onboarding'
     | '/_authenticated/profile'
     | '/_authenticated/questionnaire'
     | '/_authenticated/settings'
+    | '/_authenticated/shop'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -218,6 +242,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedFriendsRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
+    '/_authenticated/history': {
+      id: '/_authenticated/history'
+      path: '/history'
+      fullPath: '/history'
+      preLoaderRoute: typeof AuthenticatedHistoryRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
     '/_authenticated/home': {
       id: '/_authenticated/home'
       path: '/home'
@@ -260,29 +291,40 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedSettingsRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
+    '/_authenticated/shop': {
+      id: '/_authenticated/shop'
+      path: '/shop'
+      fullPath: '/shop'
+      preLoaderRoute: typeof AuthenticatedShopRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
   }
 }
 
 interface AuthenticatedRouteRouteChildren {
   AuthenticatedCoachRoute: typeof AuthenticatedCoachRoute
   AuthenticatedFriendsRoute: typeof AuthenticatedFriendsRoute
+  AuthenticatedHistoryRoute: typeof AuthenticatedHistoryRoute
   AuthenticatedHomeRoute: typeof AuthenticatedHomeRoute
   AuthenticatedMapRoute: typeof AuthenticatedMapRoute
   AuthenticatedOnboardingRoute: typeof AuthenticatedOnboardingRoute
   AuthenticatedProfileRoute: typeof AuthenticatedProfileRoute
   AuthenticatedQuestionnaireRoute: typeof AuthenticatedQuestionnaireRoute
   AuthenticatedSettingsRoute: typeof AuthenticatedSettingsRoute
+  AuthenticatedShopRoute: typeof AuthenticatedShopRoute
 }
 
 const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
   AuthenticatedCoachRoute: AuthenticatedCoachRoute,
   AuthenticatedFriendsRoute: AuthenticatedFriendsRoute,
+  AuthenticatedHistoryRoute: AuthenticatedHistoryRoute,
   AuthenticatedHomeRoute: AuthenticatedHomeRoute,
   AuthenticatedMapRoute: AuthenticatedMapRoute,
   AuthenticatedOnboardingRoute: AuthenticatedOnboardingRoute,
   AuthenticatedProfileRoute: AuthenticatedProfileRoute,
   AuthenticatedQuestionnaireRoute: AuthenticatedQuestionnaireRoute,
   AuthenticatedSettingsRoute: AuthenticatedSettingsRoute,
+  AuthenticatedShopRoute: AuthenticatedShopRoute,
 }
 
 const AuthenticatedRouteRouteWithChildren =
