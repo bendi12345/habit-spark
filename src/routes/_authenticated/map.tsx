@@ -1,3 +1,4 @@
+import { celebrateFeedback } from "@/lib/feedback";
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useEffect, useRef, useState } from "react";
@@ -23,7 +24,7 @@ function MapPage() {
   const navigate = useNavigate();
   const qc = useQueryClient();
   const [giveUpOpen, setGiveUpOpen] = useState(false);
-  const [celebrate, setCelebrate] = useState<number | null>(null);
+  const [celebrate, setCelebrate] = useState<Reward | null>(null);
   const [busy, setBusy] = useState(false);
   const [view, setView] = useState<PathView>("map");
   const [selectedPosition, setSelectedPosition] = useState<number | null>(null);
@@ -161,15 +162,15 @@ function MapPage() {
       toast.error(progressError(error.message));
       return;
     }
-    const r = data as { checkpoint: boolean; position: number };
+    const r = data as Reward;
     const completedField = fields.data?.find((field) => field.position === r.position);
     if (completedField) {
       setRatingTarget({ fieldId: completedField.id, position: completedField.position, outcome: "completed" });
       setDifficultyRating(null);
     }
     setSelectedPosition(null);
-    if (r.checkpoint) setCelebrate(r.position);
-    else toast.success("Szép munka! Jöhet a következő feladat.");
+    const prefs = celebrateFeedback(r.checkpoint || !!r.level_up);
+    setCelebrate({ ...r, reducedMotion: prefs.reducedMotion });
     await refresh();
   }
 
@@ -603,10 +604,18 @@ function MapPage() {
 
       {celebrate && (
         <Overlay onClose={() => setCelebrate(null)}>
-          <Confetti />
-          <div className="celebrate mx-auto flex size-28 items-center justify-center rounded-full bg-checkpoint text-5xl node-checkpoint">🏆</div>
-          <h2 className="mt-5 text-center text-3xl font-bold">Ellenőrzőpont: {celebrate}!</h2>
-          <p className="mt-2 text-center text-muted-foreground">Az eddigi haladásod megmarad, ezt már senki nem veheti el tőled.</p>
+          {!celebrate.reducedMotion && <Confetti />}
+          <div className={`${celebrate.reducedMotion ? "" : "celebrate"} mx-auto flex size-28 items-center justify-center rounded-full bg-checkpoint text-5xl node-checkpoint`}>{celebrate.checkpoint ? "🏆" : "⭐"}</div>
+          <h2 className="mt-5 text-center text-3xl font-bold">{celebrate.checkpoint ? `Ellenőrzőpont: ${celebrate.position}!` : "Szép munka!"}</h2>
+          <p className="mt-2 text-center text-muted-foreground">{celebrate.checkpoint ? "Az eddigi haladásod megmarad, ezt már senki nem veheti el tőled." : `A(z) ${celebrate.position}. mező teljesítve.`}</p>
+          <div className="mt-4 grid grid-cols-2 gap-2 text-center">
+            <div className="rounded-xl border bg-background/50 p-3"><p className="text-xs text-muted-foreground">Szikra</p><p className="font-display text-2xl font-bold text-checkpoint">+{celebrate.szikra ?? 0} ✨</p></div>
+            <div className="rounded-xl border bg-background/50 p-3"><p className="text-xs text-muted-foreground">XP</p><p className="font-display text-2xl font-bold text-primary">+{celebrate.xp ?? 0}</p></div>
+          </div>
+          {celebrate.streak_bonus && <p className="mt-2 text-center text-sm text-primary">🔥 Napi sorozat bónusz!</p>}
+          {celebrate.level_up && <p className="mt-2 text-center text-sm font-semibold text-checkpoint">Szintlépés! Most {celebrate.level}. szinten vagy.</p>}
+          {(celebrate.badges?.length ?? 0) > 0 && <p className="mt-2 text-center text-sm">🏅 Új jelvény: {celebrate.badges!.join(", ")}</p>}
+          <div className="mt-3 flex justify-center gap-4 text-xs text-muted-foreground"><Link to="/shop" className="underline">Bolt</Link><Link to="/history" className="underline">Szikra előzmények</Link><Link to="/profile" className="underline">Jelvények</Link></div>
           <button onClick={() => setCelebrate(null)} className="mt-6 w-full rounded-2xl bg-checkpoint py-3 font-display text-lg font-semibold text-checkpoint-foreground">Tovább</button>
         </Overlay>
       )}
@@ -704,6 +713,8 @@ function Overlay({ children, onClose }: { children: React.ReactNode; onClose: ()
     </div>
   );
 }
+
+type Reward = { checkpoint: boolean; position: number; szikra?: number; xp?: number; streak_bonus?: boolean; level_up?: boolean; level?: number; badges?: string[] | null; reducedMotion?: boolean };
 
 function Confetti() {
   const colors = ["bg-primary", "bg-checkpoint", "bg-accent", "bg-destructive"];
