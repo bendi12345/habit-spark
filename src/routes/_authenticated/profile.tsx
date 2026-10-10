@@ -11,7 +11,7 @@ export const Route = createFileRoute("/_authenticated/profile")({
 function Profile() {
   const { user } = Route.useRouteContext();
   const profile = useQuery({
-    queryKey: ["profile", user.id],
+    queryKey: ["profile-page", user.id],
     queryFn: async () => {
       const { data, error } = await supabase.from("profiles").select("display_name, username, xp, szikra, pinned_badges").eq("id", user.id).maybeSingle();
       if (error) throw error;
@@ -103,7 +103,7 @@ function Profile() {
             );
           })}
         </div>
-        {(profile.data?.pinned_badges.length ?? 0) > 0 && (
+        {(profile.data?.pinned_badges?.length ?? 0) > 0 && (
           <p className="mt-4 text-xs text-muted-foreground">Kitűzött jelvények: {pinned.join(", ")}</p>
         )}
       </section>
