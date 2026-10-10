@@ -483,6 +483,9 @@ function MapPage() {
             {selectedState !== "locked" && (
               <>
                 <p className="mt-1 text-sm text-muted-foreground">{selectedField.description}</p>
+                {selectedField.difficulty_reason && (
+                  <p className="mt-2 rounded-xl bg-primary/10 px-3 py-2 text-xs text-primary">{selectedField.difficulty_reason}</p>
+                )}
               </>
             )}
             {selectedField.is_checkpoint && (
