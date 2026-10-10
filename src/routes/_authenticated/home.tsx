@@ -36,7 +36,7 @@ function Home() {
   });
   const habit = habits.data?.[0];
   const fields = useQuery({
-    queryKey: ["fields", habit?.id],
+    queryKey: ["current-field", habit?.id, habit?.current_position],
     enabled: !!habit,
     queryFn: async () => {
       const { data, error } = await supabase
