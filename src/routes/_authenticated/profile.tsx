@@ -110,6 +110,8 @@ function Profile() {
 
       <div className="grid gap-3 sm:grid-cols-2">
         <Link to="/settings" className="block rounded-2xl border bg-card p-4 text-center font-semibold">Profil és beállítások szerkesztése</Link>
+        <Link to="/shop" className="block rounded-2xl border bg-card p-4 text-center font-semibold">Szikra bolt ✨</Link>
+        <Link to="/history" className="block rounded-2xl border bg-card p-4 text-center font-semibold">Szikra előzmények</Link>
         <Link to="/questionnaire" className="block rounded-2xl border bg-card p-4 text-center font-semibold">Személyes kérdőív</Link>
       </div>
     </main>
