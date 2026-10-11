@@ -116,6 +116,45 @@ export type Database = {
           },
         ]
       }
+      craving_sessions: {
+        Row: {
+          distraction: string | null
+          ended_at: string | null
+          habit_id: string | null
+          id: string
+          outcome: string | null
+          slip_note: string | null
+          started_at: string
+          szikra: number
+          trigger: string
+          user_id: string
+        }
+        Insert: {
+          distraction?: string | null
+          ended_at?: string | null
+          habit_id?: string | null
+          id?: string
+          outcome?: string | null
+          slip_note?: string | null
+          started_at?: string
+          szikra?: number
+          trigger?: string
+          user_id: string
+        }
+        Update: {
+          distraction?: string | null
+          ended_at?: string | null
+          habit_id?: string | null
+          id?: string
+          outcome?: string | null
+          slip_note?: string | null
+          started_at?: string
+          szikra?: number
+          trigger?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       custom_rewards: {
         Row: {
           claimed_at: string | null
@@ -496,6 +535,27 @@ export type Database = {
         }
         Relationships: []
       }
+      future_letters: {
+        Row: {
+          note: string
+          updated_at: string
+          user_id: string
+          why: string
+        }
+        Insert: {
+          note?: string
+          updated_at?: string
+          user_id: string
+          why?: string
+        }
+        Update: {
+          note?: string
+          updated_at?: string
+          user_id?: string
+          why?: string
+        }
+        Relationships: []
+      }
       group_members: {
         Row: {
           group_id: string
@@ -569,6 +629,44 @@ export type Database = {
           price?: number
         }
         Relationships: []
+      }
+      habit_pauses: {
+        Row: {
+          days: number
+          ends_at: string
+          habit_id: string
+          id: string
+          reason: string | null
+          starts_at: string
+          user_id: string
+        }
+        Insert: {
+          days: number
+          ends_at: string
+          habit_id: string
+          id?: string
+          reason?: string | null
+          starts_at?: string
+          user_id: string
+        }
+        Update: {
+          days?: number
+          ends_at?: string
+          habit_id?: string
+          id?: string
+          reason?: string | null
+          starts_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "habit_pauses_habit_id_fkey"
+            columns: ["habit_id"]
+            isOneToOne: false
+            referencedRelation: "habits"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       habits: {
         Row: {
@@ -683,6 +781,33 @@ export type Database = {
           szikra?: number
           username?: string | null
           xp?: number
+        }
+        Relationships: []
+      }
+      replacement_activities: {
+        Row: {
+          category: string
+          created_at: string
+          id: string
+          minutes: number
+          name: string
+          user_id: string
+        }
+        Insert: {
+          category: string
+          created_at?: string
+          id?: string
+          minutes?: number
+          name: string
+          user_id?: string
+        }
+        Update: {
+          category?: string
+          created_at?: string
+          id?: string
+          minutes?: number
+          name?: string
+          user_id?: string
         }
         Relationships: []
       }
@@ -866,6 +991,15 @@ export type Database = {
       decline_duel: { Args: { _duel: string }; Returns: undefined }
       expire_duel: { Args: { _duel: string }; Returns: undefined }
       fail_field: { Args: { _action: string; _habit: string }; Returns: Json }
+      finish_craving: {
+        Args: {
+          _distraction: string
+          _id: string
+          _note: string
+          _outcome: string
+        }
+        Returns: Json
+      }
       flag_duel_proof: { Args: { _duel: string }; Returns: undefined }
       forfeit_duel: { Args: { _duel: string }; Returns: undefined }
       friend_list: {
@@ -908,6 +1042,10 @@ export type Database = {
       is_duelist: { Args: { _d: string; _u: string }; Returns: boolean }
       is_group_member: { Args: { _g: string; _u: string }; Returns: boolean }
       join_group: { Args: { _code: string }; Returns: string }
+      log_slip_note: {
+        Args: { _id: string; _note: string }
+        Returns: undefined
+      }
       my_duel_progress: {
         Args: never
         Returns: {
@@ -952,11 +1090,16 @@ export type Database = {
           owner: string
         }[]
       }
+      pause_habit: {
+        Args: { _days: number; _habit: string; _reason: string }
+        Returns: Json
+      }
       redeem_reward: { Args: { _id: string }; Returns: Json }
       respond_friend: {
         Args: { _accept: boolean; _id: string }
         Returns: undefined
       }
+      resume_habit: { Args: { _habit: string }; Returns: undefined }
       review_duel_proof: {
         Args: { _approved: boolean; _duel: string; _proof_owner: string }
         Returns: Json
@@ -971,6 +1114,10 @@ export type Database = {
       }
       set_pinned_badges: { Args: { _codes: string[] }; Returns: undefined }
       stake_cap: { Args: { _a: string; _b: string }; Returns: number }
+      start_craving: {
+        Args: { _habit: string; _trigger: string }
+        Returns: string
+      }
       user_streak: { Args: { _u: string }; Returns: number }
     }
     Enums: {
