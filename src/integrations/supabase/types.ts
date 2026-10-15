@@ -116,6 +116,45 @@ export type Database = {
           },
         ]
       }
+      craving_sessions: {
+        Row: {
+          distraction: string | null
+          ended_at: string | null
+          habit_id: string | null
+          id: string
+          outcome: string | null
+          slip_note: string | null
+          started_at: string
+          szikra: number
+          trigger: string
+          user_id: string
+        }
+        Insert: {
+          distraction?: string | null
+          ended_at?: string | null
+          habit_id?: string | null
+          id?: string
+          outcome?: string | null
+          slip_note?: string | null
+          started_at?: string
+          szikra?: number
+          trigger?: string
+          user_id: string
+        }
+        Update: {
+          distraction?: string | null
+          ended_at?: string | null
+          habit_id?: string | null
+          id?: string
+          outcome?: string | null
+          slip_note?: string | null
+          started_at?: string
+          szikra?: number
+          trigger?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       custom_rewards: {
         Row: {
           claimed_at: string | null
@@ -142,6 +181,41 @@ export type Database = {
           user_id?: string
         }
         Relationships: []
+      }
+      difficulty_history: {
+        Row: {
+          attempt_outcome: string
+          created_at: string
+          field_id: string
+          id: string
+          rating: number
+          user_id: string
+        }
+        Insert: {
+          attempt_outcome: string
+          created_at?: string
+          field_id: string
+          id?: string
+          rating: number
+          user_id?: string
+        }
+        Update: {
+          attempt_outcome?: string
+          created_at?: string
+          field_id?: string
+          id?: string
+          rating?: number
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "difficulty_history_field_id_fkey"
+            columns: ["field_id"]
+            isOneToOne: false
+            referencedRelation: "fields"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       duel_badges: {
         Row: {
@@ -172,6 +246,8 @@ export type Database = {
           flagged: boolean
           id: string
           proof: string | null
+          proof_status: string
+          submitted_at: string | null
           title: string
           user_id: string
         }
@@ -182,6 +258,8 @@ export type Database = {
           flagged?: boolean
           id?: string
           proof?: string | null
+          proof_status?: string
+          submitted_at?: string | null
           title: string
           user_id: string
         }
@@ -192,6 +270,8 @@ export type Database = {
           flagged?: boolean
           id?: string
           proof?: string | null
+          proof_status?: string
+          submitted_at?: string | null
           title?: string
           user_id?: string
         }
@@ -337,11 +417,56 @@ export type Database = {
           },
         ]
       }
+      field_proofs: {
+        Row: {
+          created_at: string
+          field_id: string
+          id: string
+          proof_text: string | null
+          proof_type: string
+          review_reason: string | null
+          status: string
+          storage_path: string | null
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          field_id: string
+          id?: string
+          proof_text?: string | null
+          proof_type: string
+          review_reason?: string | null
+          status?: string
+          storage_path?: string | null
+          user_id?: string
+        }
+        Update: {
+          created_at?: string
+          field_id?: string
+          id?: string
+          proof_text?: string | null
+          proof_type?: string
+          review_reason?: string | null
+          status?: string
+          storage_path?: string | null
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "field_proofs_field_id_fkey"
+            columns: ["field_id"]
+            isOneToOne: false
+            referencedRelation: "fields"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       fields: {
         Row: {
           created_at: string
           description: string
           difficulty: number
+          difficulty_reason: string | null
           habit_id: string
           id: string
           is_checkpoint: boolean
@@ -354,6 +479,7 @@ export type Database = {
           created_at?: string
           description?: string
           difficulty: number
+          difficulty_reason?: string | null
           habit_id: string
           id?: string
           is_checkpoint?: boolean
@@ -366,6 +492,7 @@ export type Database = {
           created_at?: string
           description?: string
           difficulty?: number
+          difficulty_reason?: string | null
           habit_id?: string
           id?: string
           is_checkpoint?: boolean
@@ -405,6 +532,27 @@ export type Database = {
           id?: string
           requester?: string
           status?: string
+        }
+        Relationships: []
+      }
+      future_letters: {
+        Row: {
+          note: string
+          updated_at: string
+          user_id: string
+          why: string
+        }
+        Insert: {
+          note?: string
+          updated_at?: string
+          user_id: string
+          why?: string
+        }
+        Update: {
+          note?: string
+          updated_at?: string
+          user_id?: string
+          why?: string
         }
         Relationships: []
       }
@@ -482,12 +630,51 @@ export type Database = {
         }
         Relationships: []
       }
+      habit_pauses: {
+        Row: {
+          days: number
+          ends_at: string
+          habit_id: string
+          id: string
+          reason: string | null
+          starts_at: string
+          user_id: string
+        }
+        Insert: {
+          days: number
+          ends_at: string
+          habit_id: string
+          id?: string
+          reason?: string | null
+          starts_at?: string
+          user_id: string
+        }
+        Update: {
+          days?: number
+          ends_at?: string
+          habit_id?: string
+          id?: string
+          reason?: string | null
+          starts_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "habit_pauses_habit_id_fkey"
+            columns: ["habit_id"]
+            isOneToOne: false
+            referencedRelation: "habits"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       habits: {
         Row: {
           ai_interpretation: string | null
           consecutive_failures: number
           created_at: string
           current_position: number
+          difficulty_shift: number
           emoji: string
           free_text: string | null
           goal: string | null
@@ -504,6 +691,7 @@ export type Database = {
           consecutive_failures?: number
           created_at?: string
           current_position?: number
+          difficulty_shift?: number
           emoji?: string
           free_text?: string | null
           goal?: string | null
@@ -520,6 +708,7 @@ export type Database = {
           consecutive_failures?: number
           created_at?: string
           current_position?: number
+          difficulty_shift?: number
           emoji?: string
           free_text?: string | null
           goal?: string | null
@@ -533,12 +722,39 @@ export type Database = {
         }
         Relationships: []
       }
+      peer_confirmations: {
+        Row: {
+          confirmed_at: string
+          confirmer: string
+          feed_id: string
+        }
+        Insert: {
+          confirmed_at?: string
+          confirmer: string
+          feed_id: string
+        }
+        Update: {
+          confirmed_at?: string
+          confirmer?: string
+          feed_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "peer_confirmations_feed_id_fkey"
+            columns: ["feed_id"]
+            isOneToOne: false
+            referencedRelation: "activity_feed"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       profiles: {
         Row: {
           created_at: string
           display_name: string | null
           id: string
           invite_code: string | null
+          onboarding_answers: Json
           pinned_badges: string[]
           szikra: number
           username: string | null
@@ -549,6 +765,7 @@ export type Database = {
           display_name?: string | null
           id: string
           invite_code?: string | null
+          onboarding_answers?: Json
           pinned_badges?: string[]
           szikra?: number
           username?: string | null
@@ -559,10 +776,38 @@ export type Database = {
           display_name?: string | null
           id?: string
           invite_code?: string | null
+          onboarding_answers?: Json
           pinned_badges?: string[]
           szikra?: number
           username?: string | null
           xp?: number
+        }
+        Relationships: []
+      }
+      replacement_activities: {
+        Row: {
+          category: string
+          created_at: string
+          id: string
+          minutes: number
+          name: string
+          user_id: string
+        }
+        Insert: {
+          category: string
+          created_at?: string
+          id?: string
+          minutes?: number
+          name: string
+          user_id?: string
+        }
+        Update: {
+          category?: string
+          created_at?: string
+          id?: string
+          minutes?: number
+          name?: string
+          user_id?: string
         }
         Relationships: []
       }
@@ -704,6 +949,10 @@ export type Database = {
         Returns: undefined
       }
       accept_duel: { Args: { _duel: string }; Returns: Json }
+      accept_duel_with_challenge: {
+        Args: { _description: string; _duel: string; _title: string }
+        Returns: Json
+      }
       add_friend: { Args: { _handle: string }; Returns: Json }
       are_friends: { Args: { _a: string; _b: string }; Returns: boolean }
       buy_item: { Args: { _code: string }; Returns: Json }
@@ -713,6 +962,7 @@ export type Database = {
         Returns: Json
       }
       complete_field: { Args: { _habit: string }; Returns: Json }
+      confirm_group_proof: { Args: { _feed: string }; Returns: undefined }
       counter_duel: {
         Args: { _duel: string; _stake: number }
         Returns: undefined
@@ -726,10 +976,30 @@ export type Database = {
         }
         Returns: string
       }
+      create_duel_with_challenge: {
+        Args: {
+          _days: number
+          _description: string
+          _difficulty: number
+          _opponent: string
+          _stake: number
+          _title: string
+        }
+        Returns: string
+      }
       create_group: { Args: { _name: string }; Returns: string }
       decline_duel: { Args: { _duel: string }; Returns: undefined }
       expire_duel: { Args: { _duel: string }; Returns: undefined }
       fail_field: { Args: { _action: string; _habit: string }; Returns: Json }
+      finish_craving: {
+        Args: {
+          _distraction: string
+          _id: string
+          _note: string
+          _outcome: string
+        }
+        Returns: Json
+      }
       flag_duel_proof: { Args: { _duel: string }; Returns: undefined }
       forfeit_duel: { Args: { _duel: string }; Returns: undefined }
       friend_list: {
@@ -772,6 +1042,19 @@ export type Database = {
       is_duelist: { Args: { _d: string; _u: string }; Returns: boolean }
       is_group_member: { Args: { _g: string; _u: string }; Returns: boolean }
       join_group: { Args: { _code: string }; Returns: string }
+      log_slip_note: {
+        Args: { _id: string; _note: string }
+        Returns: undefined
+      }
+      my_duel_progress: {
+        Args: never
+        Returns: {
+          duel_id: string
+          flagged: boolean
+          progress: string
+          user_id: string
+        }[]
+      }
       my_duels: {
         Args: never
         Returns: {
@@ -797,17 +1080,44 @@ export type Database = {
           their_title: string
         }[]
       }
+      my_groups: {
+        Args: never
+        Returns: {
+          id: string
+          invite_code: string
+          member_count: number
+          name: string
+          owner: string
+        }[]
+      }
+      pause_habit: {
+        Args: { _days: number; _habit: string; _reason: string }
+        Returns: Json
+      }
       redeem_reward: { Args: { _id: string }; Returns: Json }
       respond_friend: {
         Args: { _accept: boolean; _id: string }
         Returns: undefined
       }
+      resume_habit: { Args: { _habit: string }; Returns: undefined }
+      review_duel_proof: {
+        Args: { _approved: boolean; _duel: string; _proof_owner: string }
+        Returns: Json
+      }
       reward_for: {
         Args: { _checkpoint: boolean; _difficulty: number }
         Returns: Json
       }
+      set_duel_challenge: {
+        Args: { _description: string; _duel: string; _title: string }
+        Returns: undefined
+      }
       set_pinned_badges: { Args: { _codes: string[] }; Returns: undefined }
       stake_cap: { Args: { _a: string; _b: string }; Returns: number }
+      start_craving: {
+        Args: { _habit: string; _trigger: string }
+        Returns: string
+      }
       user_streak: { Args: { _u: string }; Returns: number }
     }
     Enums: {

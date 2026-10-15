@@ -1,12 +1,12 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useState } from "react";
 import { toast } from "sonner";
-import { useQueryClient } from "@tanstack/react-query";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
 import { RefreshCw, Flag } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { interpretHabit, generatePath, type AiField } from "@/lib/path-ai.functions";
-import { BottomNav } from "@/components/BottomNav";
+import { parseQuestionnaire } from "@/lib/questionnaire";
 
 export const Route = createFileRoute("/_authenticated/onboarding")({
   head: () => ({ meta: [{ title: "New habit – Habit Shift" }] }),
@@ -22,10 +22,19 @@ const INTENSITY = [
 type Interp = { name: string; emoji: string; interpretation: string; withdrawal_risk: boolean };
 
 function Onboarding() {
+  const { user } = Route.useRouteContext();
   const navigate = useNavigate();
   const qc = useQueryClient();
   const interpret = useServerFn(interpretHabit);
   const generate = useServerFn(generatePath);
+  const profile = useQuery({
+    queryKey: ["profile", user.id],
+    queryFn: async () => {
+      const { data, error } = await supabase.from("profiles").select("onboarding_answers").eq("id", user.id).maybeSingle();
+      if (error) throw error;
+      return data;
+    },
+  });
   const [step, setStep] = useState<"describe" | "clarify" | "pace" | "edit">("describe");
   const [habit, setHabit] = useState("");
   const [goal, setGoal] = useState("");
@@ -36,6 +45,7 @@ function Onboarding() {
   const [intensity, setIntensity] = useState(2);
   const [fields, setFields] = useState<AiField[]>([]);
   const [busy, setBusy] = useState<string | null>(null);
+  const questionnaire = parseQuestionnaire(profile.data?.onboarding_answers);
 
   async function runInterpret(ans: { q: string; a: string }[]) {
     setBusy("Reading your description…");
@@ -55,7 +65,7 @@ function Onboarding() {
   async function runGenerate() {
     if (!interp) return;
     setBusy("Building your path…");
-    const r = await generate({ data: { interpretation: interp.interpretation, habit: fullContext(), goal, intensity, withdrawal_risk: interp.withdrawal_risk } });
+    const r = await generate({ data: { interpretation: interp.interpretation, habit: fullContext(), goal, intensity, withdrawal_risk: interp.withdrawal_risk, questionnaire: questionnaire.completed ? questionnaire.answers : {} } });
     setBusy(null);
     if (!r.ok) { toast.error(r.error); return; }
     setFields(r.fields); setStep("edit");
@@ -64,7 +74,7 @@ function Onboarding() {
   async function reroll(pos: number) {
     if (!interp) return;
     setBusy(`Rerolling field ${pos}…`);
-    const r = await generate({ data: { interpretation: interp.interpretation, habit: fullContext(), goal, intensity, withdrawal_risk: interp.withdrawal_risk, reroll: { position: pos, existing: fields.map((f) => f.title) } } });
+    const r = await generate({ data: { interpretation: interp.interpretation, habit: fullContext(), goal, intensity, withdrawal_risk: interp.withdrawal_risk, questionnaire: questionnaire.completed ? questionnaire.answers : {}, reroll: { position: pos, existing: fields.map((f) => f.title) } } });
     setBusy(null);
     if (!r.ok) { toast.error(r.error); return; }
     setFields((fs) => fs.map((f) => (f.position === pos && r.fields[0] ? r.fields[0] : f)));
@@ -179,7 +189,6 @@ function Onboarding() {
           </div>
         </>
       )}
-      <BottomNav />
     </main>
   );
 }

@@ -7,3 +7,8 @@
 - [ ] Next brief: feedback effects / in-app features (see uploaded "Extend the app with feedback effects…")
 - [ ] Later from Hungarian brief: long questionnaire, full settings, profile, friends placeholders
 - [ ] Social module brief (friends, groups, duels — see uploaded "Extend the app with the social module…")
+- [x] Auto-generate more fields near path end
+- [x] Personal 1-10 difficulty ratings adapting upcoming fields (feedback + history)
+- [x] GitHub export (answered: connect via + → GitHub)
+- [x] GitHub repo reviewed (older copy; user chose to build its brief)
+- [ ] Brief remainder: AI review of reflection/photo proof + honesty score, ~7-day/checkpoint check-ins, weekly summary, daily motivation

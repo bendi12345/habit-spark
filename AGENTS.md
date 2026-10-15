@@ -13,3 +13,4 @@
 - Game-state transitions (complete/fail/fallback) live in SQL RPCs `complete_field` / `fail_field` — keeps checkpoint and 3-failure rules atomic and server-enforced.
 - Paths are AI-generated server-side in `src/lib/path-ai.functions.ts`; difficulty sawtooth is computed in code, AI only writes text — keeps the shape deterministic.
 - Signed-in screens live under `src/routes/_authenticated/`; UI copy is English.
+- Path extension and difficulty recalibration live in `src/lib/path-adapt.functions.ts`; the personal shift moves each block's base in code so blocks stay sawtooth-shaped, and AI only rewrites text and explanations of locked upcoming fields.
